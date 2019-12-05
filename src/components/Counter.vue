@@ -5,7 +5,16 @@
       v-text="count"
     />
 
-    <button @click="count++">Increment</button>
+    <button
+      class="increment"
+      @click="count++"
+    >Increment</button>
+
+    <button
+      v-show="count > 0"
+      class="decrement"
+      @click="count > 0 && count--"
+    >Decrement</button>
   </div>
 </template>
 
