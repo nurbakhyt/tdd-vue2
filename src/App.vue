@@ -1,17 +1,26 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <countdown :until="until"/>
+<!--    <img alt="Vue logo" src="./assets/logo.png">-->
+<!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+// import HelloWorld from './components/HelloWorld.vue';
+import moment from 'moment';
+import Countdown from './components/Countdown.vue';
 
 export default {
   name: 'app',
   components: {
-    HelloWorld,
+    // HelloWorld,
+    Countdown,
+  },
+  data() {
+    return {
+      until: moment().add(10, 'seconds'),
+    };
   },
 };
 </script>
