@@ -1,11 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
 import { expect } from 'chai';
+import moxios from 'moxios';
 import Question from '@/components/Question.vue';
 
 describe('Question', () => {
   let wrapper;
 
   beforeEach(() => {
+    moxios.install();
+
     wrapper = shallowMount(Question, {
       propsData: {
         dataQuestion: {
@@ -14,6 +17,10 @@ describe('Question', () => {
         },
       },
     });
+  });
+
+  afterEach(() => {
+    moxios.uninstall();
   });
 
   const see = (text, selector) => {
@@ -55,16 +62,30 @@ describe('Question', () => {
     expect(wrapper.contains('#edit')).to.be.false;
   });
 
-  it('updates the question after being edited', () => {
+  it('updates the question after being edited', (done) => {
     click('#edit');
 
     type('input[name=title]', 'Changed title');
     type('textarea[name=body]', 'Changed body');
 
+    moxios.stubRequest(/questions\/\d+/, {
+      status: 200,
+      response: {
+        title: 'Changed text',
+        body: 'Changed body',
+      },
+    });
+
     click('#update');
 
     see('Changed title');
     see('Changed body');
+
+    moxios.wait(() => {
+      see('Your question has been updated.');
+
+      done();
+    });
   });
 
   it('can cancel out of edit mode', () => {
