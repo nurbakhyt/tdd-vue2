@@ -22,7 +22,10 @@ export default {
     expiredText: { default: 'Now expired.' },
   },
   data() {
-    return { now: new Date() };
+    return {
+      now: new Date(),
+      interval: null,
+    };
   },
   computed: {
     finished() {
@@ -39,11 +42,14 @@ export default {
     },
   },
   created() {
-    const interval = setInterval(() => {
+    this.interval = setInterval(() => {
       this.now = new Date();
     }, 1000);
 
-    this.$on('finished', () => clearInterval(interval));
+    this.$on('finished', () => clearInterval(this.interval));
+  },
+  destroyed() {
+    clearInterval(this.interval);
   },
 };
 </script>

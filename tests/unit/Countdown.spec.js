@@ -24,18 +24,6 @@ describe('Countdown', () => {
     expect(wrap.html()).to.have.string(text);
   };
 
-  const assertOnNextTick = (callback, done) => {
-    wrapper.vm.$nextTick(() => {
-      try {
-        callback();
-
-        done();
-      } catch (e) {
-        done(e);
-      }
-    });
-  };
-
   it('renders a countdown timer', () => {
     see('0 Days');
     see('0 Hours');
@@ -43,50 +31,50 @@ describe('Countdown', () => {
     see('10 Seconds');
   });
 
-  it('reduces the countdown every second', (done) => {
+  it('reduces the countdown every second', async () => {
     see('10 Seconds');
 
     clock.tick(1000);
 
-    assertOnNextTick(() => {
-      see('9 Seconds');
-    }, done);
+    await wrapper.vm.$nextTick();
+
+    see('9 Seconds');
   });
 
-  it('shows an expired message when the countdown has completed', (done) => {
+  it('shows an expired message when the countdown has completed', async () => {
     clock.tick(10000);
 
-    assertOnNextTick(() => {
-      see('Now expired');
-    }, done);
+    await wrapper.vm.$nextTick();
+
+    see('Now expired');
   });
 
-  it('shows a custom expired message when the countdown has completed', (done) => {
+  it('shows a custom expired message when the countdown has completed', async () => {
     wrapper.setProps({ expiredText: 'Contest is over.' });
 
     clock.tick(10000);
 
-    assertOnNextTick(() => {
-      see('Contest is over.');
-    }, done);
+    await wrapper.vm.$nextTick();
+
+    see('Contest is over.');
   });
 
-  it('broadcasts when the coundown is finished', (done) => {
+  it('broadcasts when the coundown is finished', async () => {
     clock.tick(10000);
 
-    assertOnNextTick(() => {
-      expect(wrapper.emitted().finished).to.be.ok;
-    }, done);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted().finished).to.be.ok;
   });
 
-  it('clears the interval once completed', (done) => {
+  it('clears the interval once completed', async () => {
     clock.tick(10000);
 
     expect(wrapper.vm.now.getSeconds()).to.equal(10);
 
-    assertOnNextTick(() => {
-      clock.tick(5000);
-      expect(wrapper.vm.now.getSeconds()).to.equal(10);
-    }, done);
+    await wrapper.vm.$nextTick();
+
+    clock.tick(5000);
+    expect(wrapper.vm.now.getSeconds()).to.equal(10);
   });
 });
